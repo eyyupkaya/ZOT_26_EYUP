@@ -17,14 +17,19 @@ SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
               p_twgstr RADIOBUTTON GROUP g1.
 SELECTION-SCREEN END OF BLOCK b2.
 
-*START-OF-SELECTION.
-*
+START-OF-SELECTION.
+
 IF p_twat EQ abap_true.
+TRY.
   DATA lt_wit TYPE TABLE OF zot_26_t_day4.
   APPEND VALUE #( tweet   = p_twit
                   twid    = p_twid
                 ) TO lt_wit.
   MODIFY zot_26_t_day4 FROM TABLE lt_wit.
+
+  CATCH cx_sy_open_sql_db.
+        cl_demo_output=>display( | { p_twid } ID zaten mevcut. | ).
+    ENDTRY.
   COMMIT WORK AND WAIT.
 ENDIF.
 
